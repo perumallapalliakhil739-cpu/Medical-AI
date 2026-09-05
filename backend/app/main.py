@@ -178,16 +178,37 @@ async def generic_exception_handler(request: Request, exc: Exception):
 app.include_router(api_router, prefix="/api/v1")
 
 
-@app.get("/", tags=["Root"])
-def root_summary():
-    """Welcome and quick API index."""
-    return {
-        "application": settings.APP_NAME,
-        "service": "MedLens API",
-        "version": settings.APP_VERSION,
-        "status": "operational",
-        "documentation": "/docs",
-        "health_check": "/api/v1/health",
-        "safety_boundaries": SAFETY_BOUNDARIES,
-        "safety_disclaimer": CLINICAL_SAFETY_DISCLAIMER
-    }
+# Static files and SPA serving (for unified Docker/Render deployment)
+static_dir = Path(__file__).resolve().parent.parent / "static"
+frontend_dist = Path(__file__).resolve().parent.parent.parent / "frontend" / "dist"
+active_static = static_dir if (static_dir / "index.html").exists() else (frontend_dist if (frontend_dist / "index.html").exists() else None)
+
+if active_static:
+    assets_path = active_static / "assets"
+    if assets_path.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_path)), name="static_assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    async def serve_spa(request: Request, full_path: str):
+        # Do not intercept API, docs, or OpenAPI schemas
+        if full_path.startswith("api/") or full_path.startswith("docs") or full_path.startswith("redoc") or full_path.startswith("openapi.json"):
+            raise StarletteHTTPException(status_code=404, detail="Not Found")
+        file_path = active_static / full_path
+        if file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(active_static / "index.html"))
+else:
+    @app.get("/", tags=["Root"])
+    def root_summary():
+        """Welcome and quick API index."""
+        return {
+            "application": settings.APP_NAME,
+            "service": "MedLens API",
+            "version": settings.APP_VERSION,
+            "status": "operational",
+            "documentation": "/docs",
+            "health_check": "/api/v1/health",
+            "safety_boundaries": SAFETY_BOUNDARIES,
+            "safety_disclaimer": CLINICAL_SAFETY_DISCLAIMER
+        }
+

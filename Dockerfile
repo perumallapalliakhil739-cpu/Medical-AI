@@ -1,5 +1,19 @@
-FROM python:3.11-slim
+# ===================================================
+# Stage 1: Build React Frontend
+# ===================================================
+FROM node:20-alpine AS frontend-builder
+WORKDIR /frontend
 
+COPY frontend/package*.json ./
+RUN npm install
+
+COPY frontend/ ./
+RUN npm run build
+
+# ===================================================
+# Stage 2: Python FastAPI Backend + Bundled Frontend
+# ===================================================
+FROM python:3.11-slim
 WORKDIR /app
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -19,6 +33,8 @@ COPY backend/alembic.ini ./alembic.ini
 COPY backend/alembic ./alembic
 COPY backend/app ./app
 COPY database ./database
+COPY --from=frontend-builder /frontend/dist ./static
+
 RUN mkdir -p /app/uploads /app/database
 
 EXPOSE 8000

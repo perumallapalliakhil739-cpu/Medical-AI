@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: medical-ai
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: AUTO_FALLBACK_SQLITE
+        value: "true"
+      - key: AI_API_KEY
+        sync: false
