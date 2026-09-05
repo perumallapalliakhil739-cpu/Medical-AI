@@ -202,7 +202,7 @@ export const SideBySideVerification: React.FC = () => {
           </button>
 
           <a
-            href={`http://localhost:8000/api/v1/export/patient/${report.patient_id}/html`}
+            href={`/api/v1/export/patient/${report.patient_id}/html`}
             target="_blank"
             rel="noreferrer"
             className="px-3 py-1.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-xs rounded-lg transition-colors"

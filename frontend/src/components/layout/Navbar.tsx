@@ -70,7 +70,7 @@ export const Navbar: React.FC = () => {
 
             {/* API Docs Link */}
             <a
-              href="http://localhost:8000/docs"
+              href="/docs"
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-700 hover:text-clinical-600 bg-white hover:bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 transition-colors shadow-sm"

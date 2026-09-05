@@ -427,15 +427,16 @@ export const Patients: React.FC = () => {
                 {/* Export Options (Step 23) */}
                 <div className="pt-2 flex gap-2">
                   <a
-                    href={`http://localhost:8000/api/v1/export/patient/${selectedPatient.id}/html`}
+                    href={`/api/v1/export/patient/${selectedPatient.id}/html`}
                     target="_blank"
                     rel="noreferrer"
-                    className="flex-1 text-center py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] rounded-lg transition-colors border border-slate-200"
+                    className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold text-xs rounded-xl transition-colors"
                   >
-                    Print Dossier / PDF
+                    <Download className="w-3.5 h-3.5" />
+                    Export HTML
                   </a>
                   <a
-                    href={`http://localhost:8000/api/v1/export/patient/${selectedPatient.id}/csv`}
+                    href={`/api/v1/export/patient/${selectedPatient.id}/csv`}
                     className="flex-1 text-center py-1.5 px-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-[11px] rounded-lg transition-colors border border-slate-200"
                   >
                     Export CSV
